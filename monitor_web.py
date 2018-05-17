@@ -10,7 +10,7 @@ def extract_pick_up(soup=soup):
     """
     指定されたページのhtmlを読み込み、pick upの記事を抜粋してくる
     """
-    columns = soup.find_all("dl", class_="clearfix")
+    columns = soup.find_all("article", class_="post-list")
     return columns
 
 
