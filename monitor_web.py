@@ -11,7 +11,7 @@ def extract_pick_up(soup=soup):
     指定されたページのhtmlを読み込み、最新記事を抜粋してくる
     """
     columns = soup.find_all("article", class_="post-list-item")
-    return columns
+    return columns[0:13]
 
 
 def extract_url(column):
@@ -48,7 +48,9 @@ def extract_update_article(columns):
     # 逆順に取得していき、最新記事の次からの記事のurlを取得
     for column in reversed(columns):
         url = extract_url(column)
+        # 記事番号取得
         article_num = url.replace(config['web_info']['url']+"/", "")
+
         # タイトル取得
         title = extract_title(column)
         # 取得すべきurl
@@ -63,7 +65,7 @@ def extract_update_article(columns):
     # config更新
     update_recent_article(recent_article)
     if article_list == []:
-        return ["更新記事はありません"]
+        return [["更新記事はありません", "https://kintore.site"]]
     return article_list
 
 
