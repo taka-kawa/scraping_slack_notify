@@ -16,12 +16,24 @@ def extract_pick_up(soup=soup):
 
 def extract_url(column):
     """
-    columns @params: コラムのurlを抽出する
+    columns @params: コラム
+
+    コラムのurlを取得する
     """
     column_html = BeautifulSoup(str(column), "lxml")
     url = column_html.find("a").get("href")
     return url
 
+
+def extract_title(column):
+    """
+    columns @params: コラム
+
+    コラムのタイトルを取得する
+    """
+    column_html = BeautifulSoup(str(column), "lxml")
+    title = column_html.find("h2").string
+    return title
 
 def extract_update_article(columns):
     """
@@ -31,15 +43,17 @@ def extract_update_article(columns):
     # 最新の記事番号を取得
     recent_article = config['web_info']['recent_article']
     # 更新された記事のurlを取得
-    url_list = []
+    article_list = []
     update_start = False
     # 逆順に取得していき、最新記事の次からの記事のurlを取得
     for column in reversed(columns):
         url = extract_url(column)
         article_num = url.replace(config['web_info']['url']+"/", "")
+        # タイトル取得
+        title = extract_title(column)
         # 取得すべきurl
         if update_start:
-            url_list.append(url)
+            article_list.append([title, url])
             recent_article = article_num
             continue
         # 前回取得した最新の記事かどうか判定
@@ -48,13 +62,13 @@ def extract_update_article(columns):
 
     # config更新
     update_recent_article(recent_article)
-    if url_list == []:
+    if article_list == []:
         return ["更新記事はありません"]
-    return url_list
+    return article_list
 
 
 if __name__ == "__main__":
     columns = extract_pick_up()
     url = extract_url(columns[0])
-    url_list = extract_update_article(columns)
-    slack_notify(text_="プロたんの記事", list_=url_list)
+    article_list = extract_update_article(columns)
+    slack_notify(text_="---プロたんの記事---", list_=article_list)
