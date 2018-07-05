@@ -8,9 +8,9 @@ soup = BeautifulSoup(first_view, "lxml")
 
 def extract_pick_up(soup=soup):
     """
-    指定されたページのhtmlを読み込み、pick upの記事を抜粋してくる
+    指定されたページのhtmlを読み込み、最新記事を抜粋してくる
     """
-    columns = soup.find_all("article", class_="post-list")
+    columns = soup.find_all("article", class_="post-list-item")
     return columns
 
 
